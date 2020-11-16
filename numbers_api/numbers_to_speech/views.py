@@ -5,6 +5,10 @@ from textwrap import wrap
 import math
 
 
+class NumberTooLargeException(Exception):
+    pass
+
+
 class ConvertView(APIView):
     """
     Convert an integer based string to an enlish
@@ -68,10 +72,16 @@ class ConvertView(APIView):
     }
 
     def get(self, request, number, format=None):
+        try:
+            resp_status = 'ok'
+            parsed = self.parse_number(number)
+        except NumberTooLargeException:
+            resp_status = 'error: number submitted too large, not currently supported.'
+            parsed = ''
         return Response(
             {
-                'status': 'ok',
-                'num_in_english': self.parse_number(number),
+                'status': resp_status,
+                'num_in_english': parsed,
             }, status=status.HTTP_200_OK,
         )
 
@@ -109,6 +119,12 @@ class ConvertView(APIView):
 
         number_by_magnitude = wrap(number_string, 3)
         idx = len(number_by_magnitude) - 1
+        
+        # Raise an exception if we do not support numbers at this
+        # magnitude.
+        if idx > len(cls.MAGNITUDE) - 1:
+            raise NumberTooLargeException()
+
         for hundreds_string in number_by_magnitude:
             parsed += f'{cls.parse_hundred(hundreds_string)} {cls.MAGNITUDE[idx]}'.strip()
             parsed += ' '

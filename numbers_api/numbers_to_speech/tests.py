@@ -5,7 +5,7 @@ import hypothesis.strategies as st
 from hypothesis.extra.django import TestCase as HypothesisTestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
-from numbers_to_speech.views import ConvertView
+from numbers_to_speech.views import ConvertView, NumberTooLargeException
 
 
 class ConvertViewTests(APITestCase):
@@ -24,6 +24,10 @@ class ConvertViewTests(APITestCase):
         self.assertEqual(ConvertView.parse_hundred('023'), 'twenty three')
         self.assertEqual(ConvertView.parse_hundred('005'), 'five')
         self.assertEqual(ConvertView.parse_hundred('955'), 'nine hundred fifty five')
+
+    def test_parse_too_large(self):
+        with self.assertRaises(NumberTooLargeException):
+            ConvertView.parse_number('122352712197697863249786123987432169874662938764111')
 
     def test_parse_number(self):
         self.assertEqual(ConvertView.parse_number('1024'), 'one thousand twenty four')
