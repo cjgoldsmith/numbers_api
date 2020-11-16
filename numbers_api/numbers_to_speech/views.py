@@ -77,6 +77,11 @@ class ConvertView(APIView):
 
     @classmethod
     def _post_process_teens(cls, parsed):
+        """
+        Post process a parsed string and remove
+        the oddity of teens phrasing.
+        e.g. 'one hundred ten one' is 'one hundred eleven'.
+        """
         for val in cls.POST_PROCESS_TEENS:
             if val in parsed:
                 # TODO - think about optimizing this with in place replacement re.sub
@@ -85,6 +90,12 @@ class ConvertView(APIView):
 
     @classmethod
     def parse_number(cls, number_string):
+        """
+        Parses a string representation of a number
+        ( n digits with no commas or other characters.)
+        and returns the human readable representation of
+        that number.
+        """
         parsed = ''
 
         # handle negative
@@ -106,6 +117,13 @@ class ConvertView(APIView):
 
     @classmethod
     def parse_hundred(cls, hundreds_string):
+        """
+        Parses a set of three numbers into a hundreds
+        human readable representation.
+
+        Hundreds string must be padded to 3 characters if
+        value is under the hundreds spot.
+        """
         # programming error, do not continue.
         if len(hundreds_string) != 3:
             raise ValueError("parse_hundred called with less than hundreds value string")
