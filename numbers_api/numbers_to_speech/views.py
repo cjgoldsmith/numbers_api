@@ -104,7 +104,6 @@ class ConvertView(APIView):
             idx -= 1
         return cls._post_process_teens(parsed.rstrip())
 
-
     @classmethod
     def parse_hundred(cls, hundreds_string):
         # programming error, do not continue.

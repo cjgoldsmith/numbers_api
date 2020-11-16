@@ -27,7 +27,9 @@ class ConvertViewTests(APITestCase):
 
     def test_parse_number(self):
         self.assertEqual(ConvertView.parse_number('1024'), 'one thousand twenty four')
-        self.assertEqual(ConvertView.parse_number('2541024'), 'two million five hundred fourty one thousand twenty four')
+        self.assertEqual(
+            ConvertView.parse_number('2541024'),
+            'two million five hundred fourty one thousand twenty four')
         self.assertEqual(ConvertView.parse_number('-46'), 'negative fourty six')
 
 
