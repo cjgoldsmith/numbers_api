@@ -1,2 +1,2 @@
 # numbers_api
-Small Sample API for converting numbers to speach
+Small Sample API for converting numbers to speech

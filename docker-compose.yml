@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  django_base:
+    build:
+      context: ./
+      dockerfile: DOCKER/django_base/Dockerfile
+    container_name: django_base
+  
+  django_api:
+    depends_on:
+      - django_base
+    build:
+      context: ./
+      dockerfile: DOCKER/django_api/Dockerfile
+    container_name: django_api
+    volumes:
+      - ./:/code
+    ports:
+      - 8000:8000
+    stdin_open: true
+    tty: true
+
+  django_test:
+    depends_on:
+      - django_base
+    build:
+      context: ./
+      dockerfile: DOCKER/django_test/Dockerfile
+    container_name: django_test
+    volumes:
+      - ./:/code
