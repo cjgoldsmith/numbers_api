@@ -1,1 +1,1 @@
-python numbers_api/manage.py test && flake8 /code/
+cd /code/numbers_api && python3 manage.py test && flake8 /code/

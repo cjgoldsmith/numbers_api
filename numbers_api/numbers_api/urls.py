@@ -13,9 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
+# from django.contrib import admin
+from django.urls import (path, include)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # we do not need the admin site for this api at this point.
+    # path('admin/', admin.site.urls),
+    path('ntos/', include(('numbers_to_speech.urls', 'numbers_to_speech'), namespace='ntos')),
 ]
