@@ -55,17 +55,42 @@ class ConvertView(APIView):
         14: 'tredecillion',
     }
 
+    POST_PROCESS_TEENS = {
+        'ten one': 'eleven',
+        'ten two': 'twelve',
+        'ten three': 'thirteen',
+        'ten four': 'fourteen',
+        'ten five': 'fifteen',
+        'ten six': 'sixteen',
+        'ten seven': 'seventeen',
+        'ten eight': 'eighteen',
+        'ten nine': 'nineteen',
+    }
+
     def get(self, request, number, format=None):
         return Response(
             {
                 'status': 'ok',
-                'num_in_english': self.parse_hundred(number),
+                'num_in_english': self.parse_number(number),
             }, status=status.HTTP_200_OK,
         )
 
     @classmethod
+    def _post_process_teens(cls, parsed):
+        for val in cls.POST_PROCESS_TEENS:
+            if val in parsed:
+                # TODO - think about optimizing this with in place replacement re.sub
+                parsed = parsed.replace(val, cls.POST_PROCESS_TEENS[val])
+        return parsed
+
+    @classmethod
     def parse_number(cls, number_string):
         parsed = ''
+
+        # handle negative
+        if number_string[0] == '-':
+            parsed += 'negative '
+            number_string = number_string[1:]
 
         # We require full hundreds sets in each magnitude.
         padded_length = math.ceil(len(number_string)/3) * 3
@@ -77,7 +102,7 @@ class ConvertView(APIView):
             parsed += f'{cls.parse_hundred(hundreds_string)} {cls.MAGNITUDE[idx]}'.strip()
             parsed += ' '
             idx -= 1
-        return parsed.rstrip()
+        return cls._post_process_teens(parsed.rstrip())
 
 
     @classmethod
